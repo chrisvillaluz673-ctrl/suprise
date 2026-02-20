@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Surprise</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --heart-color: #ff4d6d;
+            --accent: #ff8fa3;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            font-family: 'Georgia', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+            transition: background-color 2s ease;
+        }
+
+        /* Floating Heart */
+        #heart-btn {
+            font-size: 80px;
+            cursor: pointer;
+            animation: pulse 1.5s infinite;
+            z-index: 10;
+            user-select: none;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Content Container */
+        #content {
+            display: none;
+            text-align: center;
+            width: 90%;
+            max-width: 900px;
+            padding: 20px;
+        }
+
+        h1 { font-size: 2.5rem; color: var(--accent); margin-bottom: 10px; }
+        p { font-style: italic; margin-bottom: 30px; }
+
+        /* Polaroid Gallery */
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 12px 12px 30px 12px;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.4);
+            transform: rotate(var(--r));
+            transition: transform 0.4s ease;
+            width: 180px;
+            opacity: 0;
+            animation: fadeInPhoto 1s forwards;
+            animation-delay: var(--d);
+        }
+
+        .polaroid:hover {
+            transform: scale(1.1) rotate(0deg);
+            z-index: 5;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        .caption {
+            color: #333;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        @keyframes fadeInPhoto {
+            to { opacity: 1; }
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--heart-color);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="heart-btn">❤️</div>
+
+    <audio id="bg-music" loop>
+        <source src="music1.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="content">
+        <h1>For You, Always</h1>
+        <p>Click the photos to zoom in...</p>
+        
+        <div class="gallery">
+            <div class="polaroid" style="--r: -5deg; --d: 0.5s;">
+                <img src="pic togother.jpg" alt="Memory 1">
+                <div class="caption">Our First Date</div>
+            </div>
+            <div class="polaroid" style="--r: 3deg; --d: 1s;">
+                <img src="your pic.jpg" alt="Memory 2">
+                <div class="caption">My fav pic</div>
+            </div>
+            <div class="polaroid" style="--r: -2deg; --d: 1.5s;">
+                <img src="outfit.jpg" alt="Memory 3">
+                <div class="caption">Outfit pic</div>
+            </div>
+            <div class="polaroid" style="--r: 6deg; --d: 2s;">
+                <img src="alluringg.jpg" alt="Memory 4">
+                <div class="caption">My Favorite Smile</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const heartBtn = document.getElementById('heart-btn');
+        const content = document.getElementById('content');
+        const music = document.getElementById('bg-music');
+        const body = document.body;
+
+        heartBtn.addEventListener('click', () => {
+            // Start Music
+            music.play().catch(error => console.log("Audio play failed:", error));
+            
+            // UI Transition
+            heartBtn.style.display = 'none';
+            content.style.display = 'block';
+            body.style.backgroundColor = '#2d0d13';
+
+            // Explosion Effect
+            for (let i = 0; i < 60; i++) {
+                createParticle();
+            }
+        });
+
+        function createParticle() {
+            const p = document.createElement('div');
+            p.classList.add('particle');
+            const size = Math.random() * 8 + 4;
+            p.style.width = `${size}px`;
+            p.style.height = `${size}px`;
+            p.style.left = '50%';
+            p.style.top = '50%';
+            
+            const dx = (Math.random() - 0.5) * window.innerWidth * 1.2;
+            const dy = (Math.random() - 0.5) * window.innerHeight * 1.2;
+
+            body.appendChild(p);
+
+            p.animate([
+                { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                { transform: `translate(${dx}px, ${dy}px) scale(0)`, opacity: 0 }
+            ], {
+                duration: 2500,
+                easing: 'cubic-bezier(0, .9, .57, 1)'
+            }).onfinish = () => p.remove();
+        }
+    </script>
+</body>
+</html>
